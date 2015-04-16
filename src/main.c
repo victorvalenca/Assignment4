@@ -52,12 +52,12 @@ WHILE(POWERGOOD){
 
 	while(currentFloor < TOP){
 
-		floorRequest <- buttonPressedInside();
-		requestIn[floorRequest] <- 1;
+		floorRequest = buttonPressedInside();
+		requestIn[floorRequest] = 1;
 		openDoorCloseDoor(); //Close Doors
 
-		while (currentFloor = TOP OR array[currentFloor] = 1 OR requestIn[currentFloor] = 1 OR 
-				upRequests[currentFloor] = 1 OR pendingRequests(UP) = 1){
+		while (currentFloor == TOP || array[currentFloor] == 1 || requestIn[currentFloor] == 1 || 
+				upRequests[currentFloor] = 1 || pendingRequests(UP) == 1){
 			GO(UP); //Go to next floor up
 		}
 
@@ -65,8 +65,8 @@ WHILE(POWERGOOD){
 		//the new currentFloor value.
 		GO(STOP);
 
-		requestsIn[currentFloor] <- 0
-		upRequests[currentFloor] <- 0
+		requestsIn[currentFloor] = 0
+		upRequests[currentFloor] = 0
 
 		openDoorCloseDoor(); //Open Doors
 
@@ -78,16 +78,16 @@ WHILE(POWERGOOD){
 		requestIn[floorRequest] <- 1;
 		openDoorCloseDoor(); //Close Doors
 
-		while (currentFloor = BASEMENT OR array[currentFloor] = 1 OR requestIn[currentFloor] = 1
-				OR downRequests[currentFloor] = 1 OR pendingRequests(DOWN) = 1){
+		while (currentFloor == BASEMENT || array[currentFloor] == 1 || requestIn[currentFloor] == 1
+				|| downRequests[currentFloor] == 1 || pendingRequests(DOWN) == 1){
 			GO(DOWN); //Go to next floor down
 		}
 
 		//Stop elevator and open doors
 		GO(STOP);
 
-		requestsIn[currentFloor] <- 0;
-		upRequests[currentFloor] <- 0;
+		requestsIn[currentFloor] = 0;
+		upRequests[currentFloor] = 0;
 
 		openDoorCloseDoor(); //Open Doors
 
