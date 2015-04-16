@@ -1,4 +1,4 @@
-/**
+*
 *	Assignment 4: Elevator 
 *
 *	PURPOSE: Control an elevator inside a building
@@ -12,8 +12,8 @@
 /***********************
 * Import Statements
 ***********************/
-#import <stdio.h>
-#import "ESS.h"
+#include <stdio.h>
+#include "ESS.h"
 
 /***********************
 * Forward Declarations
