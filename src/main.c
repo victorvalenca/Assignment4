@@ -39,9 +39,9 @@ int main ()
 
 	//Initialize variables
 	int array[FLOORS] = {0};
-	int upRequests[FLOORS] = {0};
-	int downRequests[FLOORS] = {0};
-	int requestIn[FLOORS] = {0};
+	int* upRequests;
+	int* downRequests;
+	int* requestIn;
 
 	int currentFloor = 0;
 	int destinationFloor = 0;
@@ -53,81 +53,97 @@ int main ()
 while (POWERGOOD)
 {
 
-
-	*upRequests = buttonPressedOutsideGoingUp();
-	*downRequests = buttonPressedOutsideGoingDown();
+	upRequests = (int *) malloc(sizeof(int) * FLOORS);
+	downRequests = (int *) malloc(sizeof(int) * FLOORS);
+	requestIn = (int *) malloc(sizeof(int) * FLOORS);
 
 	while(currentFloor < TOP)
 	{
 
-		system("sleep 1");
-		floorRequest = buttonPressedInside();
-		system("sleep 1");
-		*(requestIn + floorRequest) = 1;
-		system("sleep 1");
-		openDoorCloseDoor(); //Close Doors
 
-		while ( (currentFloor != TOP) ||
-				( *(array + currentFloor) != 1) ||
-				( *(requestIn + currentFloor) != 1) ||
-				( *(upRequests + currentFloor) != 1) /*||
-				( pendingRequests(UP) != 1)*/)
+		floorRequest = buttonPressedInside();
+		system("sleep 2");
+		*(requestIn + floorRequest) = 1;
+
+		while ( (currentFloor < TOP) &&
+				(( *(array + currentFloor) == 0) &&
+				( *(requestIn + currentFloor) == 0) &&
+				( *(upRequests + currentFloor) == 0) /*||
+				( pendingRequests(UP) != 1)*/))
 		{
+			upRequests = buttonPressedOutsideGoingUp();
+			downRequests = buttonPressedOutsideGoingDown();
 			currentFloor = Go(UP); //Go to next floor up
-			wprintf(L"Current Floor: %d", currentFloor);
+			wprintf(L"Current Floor: %d\n", currentFloor);
+			wprintf(L"Requested Floor: %d\n",
+					*(requestIn + currentFloor));
+			wprintf(L"Up Pressed?: %d\n",
+					*(upRequests + currentFloor));
 			system("sleep 1");
+
 		}
 
-		//Stop elevator, clear buttons and open doors. It is assumed
-		//GO() automatically assigns the new currentFloor value.
-		currentFloor = Go(STOP);
-		openDoorCloseDoor(); //Open Doors
+		if ( *(requestIn + currentFloor) != 0)
+		{
+			currentFloor = Go(STOP);
+			openDoorCloseDoor();
+			*(requestIn + currentFloor) = 0;
+		}
 
-		system("sleep 1");
-		*(requestIn+currentFloor) = 0;
-		system("sleep 1");
-		*(upRequests+currentFloor) = 0;
-
+		if ( *(upRequests + currentFloor) != 0 )
+		{
+			currentFloor= Go(STOP);
+			openDoorCloseDoor();
+			*(upRequests + currentFloor) = 0;
+		}
 
 	}
 
 	while(currentFloor > BASEMENT)
 	{
 
-		*upRequests = buttonPressedOutsideGoingUp();
-		*downRequests = buttonPressedOutsideGoingDown();
-
-
 		floorRequest = buttonPressedInside();
-		system("sleep 1");
+		system("sleep 2");
 		*(requestIn + floorRequest) = 1;
-		system("sleep 1");
-		openDoorCloseDoor(); //Close Doors
 
-		while ( (currentFloor != BASEMENT) ||
-				(*(array + currentFloor) != 1) ||
-				(*(requestIn + currentFloor) != 1 )||
-				(*(downRequests + currentFloor) != 1)/* ||
-				( pendingRequests(DOWN) != 1)*/)
+		while ( (currentFloor > BASEMENT) &&
+				((*(array + currentFloor) == 0) &&
+				(*(requestIn + currentFloor) == 0 ) &&
+				(*(downRequests + currentFloor) == 0)/* ||
+				( pendingRequests(DOWN) != 1)*/))
 		{
+			upRequests = buttonPressedOutsideGoingUp();
+			downRequests = buttonPressedOutsideGoingDown();
 			currentFloor = Go(DOWN); //Go to next floor down
-			wprintf(L"Current Floor: %d", currentFloor);
+			wprintf(L"Current Floor: %d\n", currentFloor);
+			wprintf(L"Requested Floor: %d\n",
+					*(requestIn + currentFloor));
+			wprintf(L"Down Pressed?: %d\n",
+					*(downRequests + currentFloor));
 			system("sleep 1");
 		}
+
+		if ( *(requestIn + currentFloor) != 0 )
+		{
+			Go(STOP);
+			openDoorCloseDoor();
+			*(requestIn + currentFloor) = 0;
 		}
 
-		//Stop elevator and open doors
-		currentFloor = Go(STOP);
-		openDoorCloseDoor(); //Open Doors
+		if ( *(downRequests + currentFloor) != 0 )
+		{
+			Go(STOP);
+			openDoorCloseDoor();
+			*(downRequests + currentFloor) = 0;
+		}
 
-		system("sleep 1");
-		*(requestIn + currentFloor) = 0;
-		*(upRequests + currentFloor) = 0;
+
+	}
 
 
 	}
 }
-}
+
 
 int pendingRequests(int direction){
 	return 1;
