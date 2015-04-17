@@ -1,18 +1,23 @@
 FLAGS = -std=gnu99
 DEBUG = -g
+X86 = -m32
 CC = gcc
 
-Elevator.o: main.c ESS.h 
-	$(CC) -c main.c $(FLAGS) $(DEBUG)
+default: all
 
-Elev64: Elevator.o ESS64.o
-	$(CC) -o Elev_AMD_x64 Elevator.o ESS64.o $(FLAGS) $(DEBUG)
+Elevator_i386.o: main.c ESS.h
+	$(CC) -c main.c -o Elevator_i386.o $(FLAGS) $(DEBUG) $(x86)
 
-Elev32: Elevator.o ESS.32.o
-	$(CC) -o Elev_i386 Elevator.o ESS32.o $(FLAGS) $(DEBUG)
+Elevator_x64.o: main.c ESS.h
+	$(CC) -c main.c -o Elevator_x64.o $(FLAGS) $(DEBUG)
 
-all:
-	make Elev64 && make Elev32
+Elev64: Elevator_x64.o ESS64.o
+	$(CC) -o Elev_x64 Elevator_x64.o ESS64.o $(FLAGS) $(DEBUG)
+
+Elev32: Elevator_i386.o ESS32.o
+	$(CC) -o Elev_i386 Elevator_i386.o ESS32.o $(FLAGS) $(DEBUG) $(X86)
+
+all: Elev64 Elev32
 
 clean:
-	rm Elevator.o
+	rm Elevator_i386.o Elevator_x64.o
