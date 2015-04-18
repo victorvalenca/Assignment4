@@ -17,7 +17,7 @@ Elev64: Elevator_x64.o ESS64.o
 Elev32: Elevator_i386.o ESS32.o
 	$(CC) -o Elev_i386 Elevator_i386.o ESS32.o $(FLAGS) $(DEBUG) $(X86)
 
-all: Elev64 Elev32
+all:	Elev32 Elev64
 
 clean:
 	rm Elevator_i386.o Elevator_x64.o
